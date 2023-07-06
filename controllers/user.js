@@ -26,7 +26,12 @@ function getCurrentUser(req, res, next) {
 function updateUserData(req, res, next) {
   const { email, name } = req.body;
   User.findByIdAndUpdate(req.user._id, { email, name }, { new: true, runValidators: true })
-    .then((user) => res.send({ user }))
+    .then((user) => {
+      if (!user) {
+        throw new NotFoundError('Запрашиваемый пользователь не найден');
+      }
+      return res.send({ user });
+    })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return next(new ValidationError('Переданны некорректные данные при редактировании пользователя'));
@@ -36,9 +41,7 @@ function updateUserData(req, res, next) {
 }
 
 function createUser(req, res, next) {
-  const {
-    name, email, password,
-  } = req.body;
+  const { name, email, password } = req.body;
 
   bcrypt.hash(password, 10)
     .then((hash) => User.create({

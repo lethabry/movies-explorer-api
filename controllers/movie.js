@@ -4,7 +4,8 @@ const NotFoundError = require('../utils/errors/NotFoundError');
 const СredentialError = require('../utils/errors/СredentialError');
 
 function getMovies(req, res, next) {
-  Movie.find({})
+  Movie.find({ owner: req.user._id })
+    .populate('owner')
     .then((movies) => res.send({ movies }))
     .catch(next);
 }

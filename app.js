@@ -20,7 +20,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(checkAccessCors);
 
-mongoose.connect('mongodb://127.0.0.1:27017/bitfilmsdb');
+mongoose.connect(process.env.MONOGOD_SERVER);
 
 app.use(helmet());
 app.use(limiter);
